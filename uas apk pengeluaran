@@ -1,0 +1,47 @@
+let data = JSON.parse(localStorage.getItem('pengeluaran')) || [];
+
+function tambahPengeluaran() {
+    const tanggal = document.getElementById("tanggal").value;
+    const deskripsi = document.getElementById("deskripsi").value;
+    const nominal = parseFloat(document.getElementById("nominal").value);
+
+    if (!tanggal || !deskripsi || isNaN(nominal)) {
+        alert("Isi semua field dengan benar!");
+        return;
+    }
+
+    data.push({ tanggal, deskripsi, nominal });
+    localStorage.setItem('pengeluaran', JSON.stringify(data));
+    tampilkanData();
+    hitungTotal();
+}
+
+function tampilkanData() {
+    let html = "";
+    data.forEach((item, index) => {
+        html += `<tr>
+                    <td>${item.tanggal}</td>
+                    <td>${item.deskripsi}</td>
+                    <td>${item.nominal}</td>
+                    <td><button onclick="hapusData(${index})">Hapus</button></td>
+                 </tr>`;
+    });
+    document.getElementById("isiTabel").innerHTML = html;
+}
+
+function hitungTotal() {
+    const total = data.reduce((sum, item) => sum + item.nominal, 0);
+    document.getElementById("total").innerText = `Total Hari Ini: Rp${total}`;
+}
+
+function hapusData(index) {
+    data.splice(index, 1);
+    localStorage.setItem('pengeluaran', JSON.stringify(data));
+    tampilkanData();
+    hitungTotal();
+}
+
+window.onload = function () {
+    tampilkanData();
+    hitungTotal();
+}
